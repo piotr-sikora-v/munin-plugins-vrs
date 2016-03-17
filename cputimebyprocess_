@@ -1,0 +1,32 @@
+#!/bin/sh
+
+PROCESS=${0##*cpubyprocessvrs_}
+case $1 in
+   config)
+cat <<EOM
+graph_title CPU Usage by $PROCESS
+graph_vlabel %CPU
+graph_category system
+cpu.label %CPU
+cpu.type DERIVE 
+cpu.min 0
+EOM
+exit 0;;
+esac
+
+CLOCK=`getconf CLK_TCK`
+CTIME=0
+PIDS=`pidof $PROCESS`
+CHECK=`echo $PIDS|wc -m`
+if [ $CHECK -lt 1 ]
+then
+        echo "cpu.value 0"
+        exit
+fi
+for PID in $PIDS;
+do
+        let CTIME=CTIME+`cat /proc/${PID}/stat | cut -d" " -f14,15,16,17 | awk  '{print $1+$2+$3+$4}'`
+done
+TIME=`echo ''|awk -v CTIME="$CTIME" -v CLOCK="$CLOCK" '{print (CTIME/CLOCK)*100}'`
+echo "cpu.value $TIME"
+
