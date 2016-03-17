@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROCESS=${0##*cpubyprocessvrs_}
+PROCESS=${0##*cputimebyprocess_}
 case $1 in
    config)
 cat <<EOM
