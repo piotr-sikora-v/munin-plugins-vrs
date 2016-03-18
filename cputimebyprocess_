@@ -25,7 +25,7 @@ then
 fi
 for PID in $PIDS;
 do
-        let CTIME=CTIME+`cat /proc/${PID}/stat | cut -d" " -f14,15,16,17 | awk  '{print $1+$2+$3+$4}'`
+        let CTIME=CTIME+`awk  '{print $14+$15+$16+$17}' /proc/${PID}/stat`
 done
 TIME=`echo ''|awk -v CTIME="$CTIME" -v CLOCK="$CLOCK" '{printf("%.0f",(CTIME/CLOCK)*100)}'`
 echo "cpu.value $TIME"
